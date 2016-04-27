@@ -1,0 +1,2 @@
+public interface ${entity.getName()}DeleteFunction extends DeleteFunction<${entity.getName()}> {
+}

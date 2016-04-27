@@ -1,0 +1,15 @@
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.function.Supplier;
+
+public class CreateFunction<T> implements ICreateFunction<T> {
+	@Inject
+	private EntityManager entityManager;
+
+	@Override
+	public T apply(Supplier<T> s) {
+		T u = s.get();
+		entityManager.persist(u);
+		return u;
+	}
+}
