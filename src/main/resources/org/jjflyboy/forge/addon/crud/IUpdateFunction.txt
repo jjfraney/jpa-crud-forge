@@ -1,4 +1,0 @@
-import java.util.function.Function;
-import java.util.function.BiFunction;
-public interface IUpdateFunction<T> extends BiFunction<T, Function<T, T>, T> {
-}

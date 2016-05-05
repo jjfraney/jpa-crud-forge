@@ -54,12 +54,12 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		map.put("context", context);
 
 		List<JavaSource<?>> javaSources = new ArrayList<>();
-		javaSources.add(createBusinessKeyAnnotation(context.getEntity().getPackage()));
 
+		// these are common to all entities
 		javaSources.add(createEntityManagerProducer(map));
 		javaSources.add(createCreateFunctionInterface(map));
 		javaSources.add(createCreateFunctionImpl(map));
-		javaSources.add(createUpdateFunctionInterface(map));
+		javaSources.add(createUpdaterInterface(map));
 		javaSources.add(createUpdateFunctionImpl(map));
 		javaSources.add(createDeleteFunctionInterface(map));
 		javaSources.add(createDeleteFunctionImpl(map));
@@ -67,8 +67,10 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		javaSources.add(createFinderInterface(map));
 		javaSources.add(createFindListGeneric(map));
 		javaSources.add(createFindSingleGeneric(map));
+
+		// these depend on entity
 		javaSources.add(createEntityCreateFunctionInterface(map));
-		javaSources.add(createEntityUpdateFunctionInterface(map));
+		javaSources.add(createEntityUpdaterInterface(map));
 		javaSources.add(createEntityDeleteFunctionInterface(map));
 
 		JavaSourceFacet javaSourceFacet = context.getProject().getFacet(JavaSourceFacet.class);
@@ -77,11 +79,11 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		}
 
 		result.add(createEntityCreateFunction(map));
-		result.add(createEntityUpdateFunction(map));
+		result.add(createEntityUpdaterImplementation(map));
 		result.add(createEntityDeleteFunction(map));
 		// result.add(createEntityAbstractBuilder(map));
 		// result.add(createEntityBuilder(map));
-		result.add(createEntityUpdateFunction(map));
+		result.add(createEntityUpdaterImplementation(map));
 
 		return result;
 	}
@@ -119,7 +121,7 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 	}
 
 	private JavaSource<?> createUpdateFunctionImpl(Map<Object, Object> map) {
-		return generateClassFromTextFile(map, "UpdateFunction.txt");
+		return generateClassFromTextFile(map, "UpdaterImplementation.txt");
 	}
 
 	private JavaSource<?> createCreateFunctionImpl(Map<Object, Object> map) {
@@ -138,12 +140,12 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return generateClassFromTemplate(map,  "EntityDeleteFunction.jv");
 	}
 
-	private JavaSource<?> createEntityUpdateFunctionInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTemplate(map,  "IEntityUpdateFunction.jv");
+	private JavaSource<?> createEntityUpdaterInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTemplate(map, "UpdaterEntityInterface.jv");
 	}
 
-	private JavaClassSource createEntityUpdateFunction(Map<Object, Object> map) {
-		return generateClassFromTemplate(map,  "EntityUpdateFunction.jv");
+	private JavaClassSource createEntityUpdaterImplementation(Map<Object, Object> map) {
+		return generateClassFromTemplate(map, "UpdaterEntityImplementation.jv");
 	}
 
 	private JavaSource<?> createEntityCreateFunctionInterface(Map<Object, Object> map) {
@@ -226,8 +228,8 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return generateInterfaceFromTextFile(map, "IDeleteFunction.txt");
 	}
 
-	private JavaInterfaceSource createUpdateFunctionInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTextFile(map, "IUpdateFunction.txt");
+	private JavaInterfaceSource createUpdaterInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTextFile(map, "UpdaterInterface.txt");
 	}
 
 	private JavaInterfaceSource createCreateBuilderInterface(Map<Object, Object> map) {

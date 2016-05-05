@@ -1,0 +1,14 @@
+import java.util.function.Supplier;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
+public class UpdaterImpl<T> implements Updater<T> {
+	@Inject
+	private EntityManager entityManager;
+
+	@Override
+	public T update(Supplier<T> detached) {
+		return entityManager.merge(detached.get());
+	}
+}

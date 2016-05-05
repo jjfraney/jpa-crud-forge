@@ -1,0 +1,4 @@
+ 
+ public class ${entity.getName()}UpdaterImpl extends UpdaterImpl<${entity.getName()}> implements ${entity.getName()}Updater{
+ 
+ }

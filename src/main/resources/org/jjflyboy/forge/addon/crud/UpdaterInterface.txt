@@ -1,0 +1,5 @@
+import java.util.function.Supplier;
+
+public interface Updater<T> {
+	T update(Supplier<T> detached);
+}

@@ -1,2 +1,0 @@
-public interface ${entity.getName()}UpdateFunction extends UpdateFunction<${entity.getName()}> {
-}
