@@ -1,0 +1,6 @@
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+public interface Specification<T> {
+	TypedQuery<T> asQuery(EntityManager entityManager);
+}

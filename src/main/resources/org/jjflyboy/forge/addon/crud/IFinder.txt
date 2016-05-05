@@ -1,0 +1,3 @@
+public interface IFinder<T, R> {
+	R find(Specification<T> specification);
+}

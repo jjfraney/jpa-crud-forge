@@ -44,7 +44,7 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 	@Override
 	public List<JavaClassSource> generateFrom(CrudToolGenerationContext context) throws Exception {
 		List<JavaClassSource> result = new ArrayList<>();
-		
+
 		JavaClassSource entity = context.getEntity();
 		String persistenceUnitName = context.getPersistenceUnitName();
 
@@ -52,10 +52,10 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		map.put("entity", entity);
 		map.put("persistenceUnitName", persistenceUnitName);
 		map.put("context", context);
-		
+
 		List<JavaSource<?>> javaSources = new ArrayList<>();
 		javaSources.add(createBusinessKeyAnnotation(context.getEntity().getPackage()));
-		
+
 		javaSources.add(createEntityManagerProducer(map));
 		javaSources.add(createCreateFunctionInterface(map));
 		javaSources.add(createCreateFunctionImpl(map));
@@ -63,7 +63,10 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		javaSources.add(createUpdateFunctionImpl(map));
 		javaSources.add(createDeleteFunctionInterface(map));
 		javaSources.add(createDeleteFunctionImpl(map));
+		javaSources.add(createSpecificationInterface(map));
 		javaSources.add(createFinderInterface(map));
+		javaSources.add(createFindListGeneric(map));
+		javaSources.add(createFindSingleGeneric(map));
 		javaSources.add(createEntityCreateFunctionInterface(map));
 		javaSources.add(createEntityUpdateFunctionInterface(map));
 		javaSources.add(createEntityDeleteFunctionInterface(map));
@@ -72,25 +75,36 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		for(JavaSource<?> js: javaSources) {
 			javaSourceFacet.saveJavaSource(js);
 		}
-		
+
 		result.add(createEntityCreateFunction(map));
 		result.add(createEntityUpdateFunction(map));
 		result.add(createEntityDeleteFunction(map));
-		result.add(createEntityFinderByBusinessKey(map));
 		// result.add(createEntityAbstractBuilder(map));
 		// result.add(createEntityBuilder(map));
 		result.add(createEntityUpdateFunction(map));
-		
+
 		return result;
 	}
 
 
-	private JavaClassSource createEntityBuilder(Map<Object, Object> map) throws IOException {
+	private JavaSource<?> createFindSingleGeneric(Map<Object, Object> map) {
+		return generateClassFromTextFile(map, "FinderSingleGeneric.txt");
+	}
+
+	private JavaSource<?> createFindListGeneric(Map<Object, Object> map) {
+		return generateClassFromTextFile(map, "FinderListGeneric.txt");
+	}
+
+	private JavaSource<?> createSpecificationInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTextFile(map, "Specification.txt");
+	}
+
+	private JavaClassSource createEntityBuilder(Map<Object, Object> map) {
 		return generateClassFromTemplate(map,  "EntityCreateBuilder.jv");
 	}
 
 
-	private JavaClassSource createEntityAbstractBuilder(Map<Object, Object> map) throws IOException {
+	private JavaClassSource createEntityAbstractBuilder(Map<Object, Object> map) {
 		return generateClassFromTemplate(map,  "EntityAbstractBuilder.jv");
 	}
 
@@ -104,47 +118,50 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return businessKeyAnnotation;
 	}
 
-	private JavaSource<?> createUpdateFunctionImpl(Map<Object, Object> map) throws IOException {
+	private JavaSource<?> createUpdateFunctionImpl(Map<Object, Object> map) {
 		return generateClassFromTextFile(map, "UpdateFunction.txt");
 	}
 
-	private JavaSource<?> createCreateFunctionImpl(Map<Object, Object> map) throws IOException {
+	private JavaSource<?> createCreateFunctionImpl(Map<Object, Object> map) {
 		return generateClassFromTextFile(map, "CreateFunction.txt");
 	}
-	private JavaSource<?> createDeleteFunctionImpl(Map<Object, Object> map) throws IOException {
+
+	private JavaSource<?> createDeleteFunctionImpl(Map<Object, Object> map) {
 		return generateClassFromTextFile(map, "DeleteFunction.txt");
 	}
 
-	private JavaClassSource createEntityFinderByBusinessKey(Map<Object, Object> map) throws IOException {
-		return generateClassFromTemplate(map,  "FinderByBusinessKeyTool.jv");
-	}
-	private JavaSource<?> createEntityDeleteFunctionInterface(Map<Object, Object> map) throws IOException {
+	private JavaSource<?> createEntityDeleteFunctionInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTemplate(map,  "IEntityDeleteFunction.jv");
 	}
-	private JavaClassSource createEntityDeleteFunction(Map<Object, Object> map) throws IOException {
+
+	private JavaClassSource createEntityDeleteFunction(Map<Object, Object> map) {
 		return generateClassFromTemplate(map,  "EntityDeleteFunction.jv");
 	}
-	private JavaSource<?> createEntityUpdateFunctionInterface(Map<Object, Object> map) throws IOException {
+
+	private JavaSource<?> createEntityUpdateFunctionInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTemplate(map,  "IEntityUpdateFunction.jv");
 	}
-	private JavaClassSource createEntityUpdateFunction(Map<Object, Object> map) throws IOException {
+
+	private JavaClassSource createEntityUpdateFunction(Map<Object, Object> map) {
 		return generateClassFromTemplate(map,  "EntityUpdateFunction.jv");
 	}
-	private JavaSource<?> createEntityCreateFunctionInterface(Map<Object, Object> map) throws IOException {
+
+	private JavaSource<?> createEntityCreateFunctionInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTemplate(map,  "IEntityCreateFunction.jv");
 	}
 
-	private JavaClassSource createEntityCreateFunction(Map<Object, Object> map) throws IOException {
+	private JavaClassSource createEntityCreateFunction(Map<Object, Object> map) {
 		return generateClassFromTemplate(map,  "EntityCreateFunction.jv");
 	}
 
-	private JavaClassSource generateClassFromTemplate(Map<Object, Object> map, String template) throws IOException {
+	private JavaClassSource generateClassFromTemplate(Map<Object, Object> map, String template) {
 		String output = applyTemplate(map, template);
 		JavaClassSource source = parse(JavaClassSource.class, output);
 		finalizeGeneration(map, source);
 		return source;
 	}
-	private JavaInterfaceSource generateInterfaceFromTemplate(Map<Object, Object> map, String template) throws IOException {
+
+	private JavaInterfaceSource generateInterfaceFromTemplate(Map<Object, Object> map, String template) {
 		String output = applyTemplate(map, template);
 		JavaInterfaceSource source = parse(JavaInterfaceSource.class, output);
 		finalizeGeneration(map, source);
@@ -158,7 +175,7 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 	}
 
 
-	private String applyTemplate(Map<Object, Object> map, String template) throws IOException {
+	private String applyTemplate(Map<Object, Object> map, String template) {
 		Resource<URL> templateResource = resourceFactory.create(getClass().getResource(template));
 		String output = applyTemplate(map, templateResource);
 		return output;
@@ -168,32 +185,48 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return Roaster.parse(c, string);
 	}
 
-	private String applyTemplate(Map<Object, Object> map, Resource<URL> templateResource) throws IOException {
+	private String applyTemplate(Map<Object, Object> map, Resource<URL> templateResource) {
 		Template processor = templateFactory.create(templateResource, FreemarkerTemplate.class);
-		String output = processor.process(map);
-		return output;
+		try {
+			return processor.process(map);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	private JavaClassSource generateClassFromTextFile(Map<Object, Object> map, String name) throws IOException {
+	private JavaClassSource generateClassFromTextFile(Map<Object, Object> map, String name) {
 		Resource<URL> resource = resourceFactory.create(getClass().getResource(name));
-		JavaClassSource source = Roaster.parse(JavaClassSource.class, resource.getUnderlyingResourceObject());
+		JavaClassSource source;
+		try {
+			source = Roaster.parse(JavaClassSource.class, resource.getUnderlyingResourceObject());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		source.setPackage(((CrudToolGenerationContext)map.get("context")).getTargetPackageName());
 		return source;
 	}
-	private JavaInterfaceSource generateInterfaceFromTextFile(Map<Object, Object> map, String name) throws IOException {
+
+	private JavaInterfaceSource generateInterfaceFromTextFile(Map<Object, Object> map, String name) {
 		Resource<URL> resource = resourceFactory.create(getClass().getResource(name));
-		JavaInterfaceSource source = Roaster.parse(JavaInterfaceSource.class, resource.getUnderlyingResourceObject());
+		JavaInterfaceSource source;
+		try {
+			source = Roaster.parse(JavaInterfaceSource.class, resource.getUnderlyingResourceObject());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		source.setPackage(((CrudToolGenerationContext)map.get("context")).getTargetPackageName());
 		return source;
 	}
-	
-	private JavaInterfaceSource createCreateFunctionInterface(Map<Object, Object> map) throws IOException {
+
+	private JavaInterfaceSource createCreateFunctionInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTextFile(map, "ICreateFunction.txt");
 	}
-	private JavaInterfaceSource createDeleteFunctionInterface(Map<Object, Object> map) throws IOException {
+
+	private JavaInterfaceSource createDeleteFunctionInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTextFile(map, "IDeleteFunction.txt");
 	}
-	private JavaInterfaceSource createUpdateFunctionInterface(Map<Object, Object> map) throws IOException {
+
+	private JavaInterfaceSource createUpdateFunctionInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTextFile(map, "IUpdateFunction.txt");
 	}
 
@@ -204,10 +237,10 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 				.setPackage(targetPackageName)
 				.setName("ICreateBuilder");
 		source.addTypeVariable()
-			.setName("T");
+		.setName("T");
 		source.addMethod()
-			.setName("apply")
-			.setReturnType("T");
+		.setName("apply")
+		.setReturnType("T");
 		return source;
 	}
 
@@ -219,35 +252,23 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 				.setPackage(targetPackageName)
 				.setName("IUpdateBuilder");
 		source.addTypeVariable()
-			.setName("T");
+		.setName("T");
 		source.addMethod()
-			.setName("apply")
-			.setReturnType("T")
-			.addParameter("T", "t");
+		.setName("apply")
+		.setReturnType("T")
+		.addParameter("T", "t");
 		return source;
 	}
+
 	private JavaInterfaceSource createFinderInterface(Map<Object, Object> map) {
-		CrudToolGenerationContext context = (CrudToolGenerationContext)map.get("context");
-		String targetPackageName = context.getTargetPackageName();
-		JavaInterfaceSource source = Roaster.create(JavaInterfaceSource.class)
-				.setPackage(targetPackageName)
-				.setName("Finder");
-		source.addTypeVariable()
-			.setName("T");
-		source.addTypeVariable()
-			.setName("R");
-		source.addMethod()
-			.setName("find")
-			.setReturnType("R")
-			.addParameter("T", "t");
-		return source;
+		return generateInterfaceFromTextFile(map, "IFinder.txt");
 	}
 
 	private JavaClassSource createEntityManagerProducer(Map<Object, Object> map) {
 		CrudToolGenerationContext context = (CrudToolGenerationContext)map.get("context");
 		String targetPackageName = context.getTargetPackageName();
 		String unitName = (String) map.get("persistenceUnitName");
-		
+
 		JavaClassSource producer = Roaster.create(JavaClassSource.class)
 				.setPackage(targetPackageName)
 				.setName("EntityManagerProducer");
@@ -257,14 +278,14 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 				.setName("entityManager")
 				.setPrivate()
 				.setType(EntityManager.class);
-				;
-		
+		;
+
 		producer.addImport(PersistenceContext.class);
 		AnnotationSource<JavaClassSource> pc = emfield.addAnnotation(PersistenceContext.class);
 		if(unitName != null) {
 			pc.setStringValue("unitName", unitName);
 		}
-		
+
 		MethodSource<JavaClassSource> method = producer.addMethod()
 				.setName("getEntityManager")
 				.setReturnType(EntityManager.class)
@@ -272,7 +293,7 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 				.setBody("return entityManager;");
 		method.addAnnotation(Produces.class);
 		producer.addAnnotation(ApplicationScoped.class);
-		
+
 		return producer;
 	}
 

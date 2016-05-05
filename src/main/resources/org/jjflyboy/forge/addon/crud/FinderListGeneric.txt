@@ -1,0 +1,15 @@
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
+public class FinderListResult<T> implements IFinder<T, List<T>> {
+
+	@Inject
+	private EntityManager entityManager;
+
+	@Override
+	public List<T> find(Specification<T> specification) {
+		return specification.asQuery(entityManager).getResultList();
+	}
+}

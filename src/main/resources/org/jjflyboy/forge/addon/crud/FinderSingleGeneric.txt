@@ -1,0 +1,18 @@
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+
+public class FinderSingleResult<T> implements IFinder<T, T> {
+
+	@Inject
+	private EntityManager entityManager;
+
+	@Override
+	public T find(Specification<T> specification) {
+		try {
+			return specification.asQuery(entityManager).getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+}
