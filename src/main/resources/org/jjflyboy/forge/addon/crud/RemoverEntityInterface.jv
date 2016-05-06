@@ -1,0 +1,2 @@
+public interface ${entity.getName()}Remover extends Remover<${entity.getName()}> {
+}

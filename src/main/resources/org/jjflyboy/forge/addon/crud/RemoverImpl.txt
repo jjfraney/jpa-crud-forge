@@ -2,12 +2,12 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.function.Supplier;
 
-public class DeleteFunction<T> implements IDeleteFunction<T> {
+public class RemoverImpl<T> implements Remover<T> {
 	@Inject
 	private EntityManager entityManager;
 
 	@Override
-	public void apply(Supplier<T> s) {
+	public void remove(Supplier<T> s) {
 		T u = s.get();
 		entityManager.remove(u);
 	}

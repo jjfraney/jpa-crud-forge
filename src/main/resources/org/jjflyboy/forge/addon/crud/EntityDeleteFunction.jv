@@ -1,4 +1,0 @@
- 
- public class ${entity.getName()}DeleteFunction extends DeleteFunction<${entity.getName()}> {
- 
- }

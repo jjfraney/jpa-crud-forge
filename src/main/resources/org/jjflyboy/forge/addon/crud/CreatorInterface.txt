@@ -1,0 +1,5 @@
+import java.util.function.Supplier;
+
+public interface Creator<T> {
+	T create(Supplier<T> entity);
+}

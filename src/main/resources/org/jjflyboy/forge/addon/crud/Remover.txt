@@ -1,0 +1,5 @@
+import java.util.function.Supplier;
+
+public interface Remover<T> {
+	void remove(Supplier<T> s);
+}

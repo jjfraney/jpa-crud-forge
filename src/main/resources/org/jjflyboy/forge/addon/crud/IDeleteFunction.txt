@@ -1,5 +1,0 @@
-import java.util.function.Supplier;
-import java.util.function.Function;
-public interface IDeleteFunction<T> {
-	void apply(Supplier<T> s);
-}
