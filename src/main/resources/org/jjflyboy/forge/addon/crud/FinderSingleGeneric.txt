@@ -1,8 +1,10 @@
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-public class FinderSingleResult<T> implements IFinder<T, T> {
+@Dependent
+public class EntityFinderSingleResultImpl<T> implements EntityFinderSingleResult<T> {
 
 	@Inject
 	private EntityManager entityManager;

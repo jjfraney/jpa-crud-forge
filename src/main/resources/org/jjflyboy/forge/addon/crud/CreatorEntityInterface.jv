@@ -1,2 +1,0 @@
-public interface ${entity.getName()}Creator extends Creator<${entity.getName()}> {
-}

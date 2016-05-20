@@ -1,0 +1,2 @@
+public interface ${entity.getName()}Creator extends EntityCreator<${entity.getName()}> {
+}

@@ -1,3 +1,4 @@
-public interface IFinder<T, R> {
+
+public interface EntityFinder<T, R> {
 	R find(Specification<T> specification);
 }

@@ -1,3 +1,0 @@
- 
- public class ${entity.getName()}CreatorImpl extends CreatorImpl<${entity.getName()}> implements ${entity.getName()}Creator {
-}

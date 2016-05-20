@@ -65,6 +65,8 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		javaSources.add(createRemoverImpl(map));
 		javaSources.add(createSpecificationInterface(map));
 		javaSources.add(createFinderInterface(map));
+		javaSources.add(createFinderListResultInterface(map));
+		javaSources.add(createFinderSingleResultInterface(map));
 		javaSources.add(createFindListGeneric(map));
 		javaSources.add(createFindSingleGeneric(map));
 
@@ -72,6 +74,8 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		javaSources.add(createCreatorEntityInterface(map));
 		javaSources.add(createUpdaterEntityInterface(map));
 		javaSources.add(createRemoverEntityInterface(map));
+		javaSources.add(createEntityFinderListResultInterface(map));
+		javaSources.add(createEntityFinderSingleResultInterface(map));
 
 		JavaSourceFacet javaSourceFacet = context.getProject().getFacet(JavaSourceFacet.class);
 		for(JavaSource<?> js: javaSources) {
@@ -81,12 +85,38 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		result.add(createCreatorEntityImpl(map));
 		result.add(createUpdaterEntityImplementation(map));
 		result.add(createRemoverEntityImpl(map));
+		result.add(createEntityFinderListResultImplementation(map));
+		result.add(createEntityFinderSingleResultImplementation(map));
 		// result.add(createEntityAbstractBuilder(map));
 		// result.add(createEntityBuilder(map));
 
 		return result;
 	}
 
+
+	private JavaClassSource createEntityFinderSingleResultImplementation(Map<Object, Object> map) {
+		return generateClassFromTemplate(map, "EntityFinderSingleResultImplementation.jv");
+	}
+
+	private JavaClassSource createEntityFinderListResultImplementation(Map<Object, Object> map) {
+		return generateClassFromTemplate(map, "EntityFinderListResultImplementation.jv");
+	}
+
+	private JavaSource<?> createEntityFinderSingleResultInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTemplate(map, "EntityFinderSingleResultInterface.jv");
+	}
+
+	private JavaSource<?> createEntityFinderListResultInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTemplate(map, "EntityFinderListResultInterface.jv");
+	}
+
+	private JavaSource<?> createFinderSingleResultInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTextFile(map, "FinderSingleResultInterface.txt");
+	}
+
+	private JavaSource<?> createFinderListResultInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTextFile(map, "FinderListResultInterface.txt");
+	}
 
 	private JavaSource<?> createFindSingleGeneric(Map<Object, Object> map) {
 		return generateClassFromTextFile(map, "FinderSingleGeneric.txt");
@@ -128,31 +158,31 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 	}
 
 	private JavaSource<?> createRemoverImpl(Map<Object, Object> map) {
-		return generateClassFromTextFile(map, "RemoverImpl.txt");
+		return generateClassFromTextFile(map, "RemoverImplementation.txt");
 	}
 
 	private JavaSource<?> createRemoverEntityInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTemplate(map, "RemoverEntityInterface.jv");
+		return generateInterfaceFromTemplate(map, "EntityRemoverInterface.jv");
 	}
 
 	private JavaClassSource createRemoverEntityImpl(Map<Object, Object> map) {
-		return generateClassFromTemplate(map, "RemoverEntityImpl.jv");
+		return generateClassFromTemplate(map, "EntityRemoverImplementation.jv");
 	}
 
 	private JavaSource<?> createUpdaterEntityInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTemplate(map, "UpdaterEntityInterface.jv");
+		return generateInterfaceFromTemplate(map, "EntityUpdaterInterface.jv");
 	}
 
 	private JavaClassSource createUpdaterEntityImplementation(Map<Object, Object> map) {
-		return generateClassFromTemplate(map, "UpdaterEntityImplementation.jv");
+		return generateClassFromTemplate(map, "EntityUpdaterImplementation.jv");
 	}
 
 	private JavaSource<?> createCreatorEntityInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTemplate(map, "CreatorEntityInterface.jv");
+		return generateInterfaceFromTemplate(map, "EntityCreatorInterface.jv");
 	}
 
 	private JavaClassSource createCreatorEntityImpl(Map<Object, Object> map) {
-		return generateClassFromTemplate(map, "CreatorEntityImplementation.jv");
+		return generateClassFromTemplate(map, "EntityCreatorImplementation.jv");
 	}
 
 	private JavaClassSource generateClassFromTemplate(Map<Object, Object> map, String template) {
@@ -224,11 +254,11 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 	}
 
 	private JavaInterfaceSource createRemoverInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTextFile(map, "Remover.txt");
+		return generateInterfaceFromTextFile(map, "RemoverInterface.txt");
 	}
 
 	private JavaInterfaceSource createUpdaterInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTextFile(map, "Updater.txt");
+		return generateInterfaceFromTextFile(map, "UpdaterInterface.txt");
 	}
 
 	private JavaInterfaceSource createCreateBuilderInterface(Map<Object, Object> map) {
@@ -262,7 +292,7 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 	}
 
 	private JavaInterfaceSource createFinderInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTextFile(map, "IFinder.txt");
+		return generateInterfaceFromTextFile(map, "FinderInterface.txt");
 	}
 
 	private JavaClassSource createEntityManagerProducer(Map<Object, Object> map) {

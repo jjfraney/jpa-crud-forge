@@ -1,0 +1,3 @@
+
+public interface ${entity.getName()}FinderSingleResult extends EntityFinderSingleResult<${entity.getName()}> {
+}

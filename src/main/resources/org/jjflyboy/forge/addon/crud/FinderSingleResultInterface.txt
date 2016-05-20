@@ -1,0 +1,4 @@
+import java.util.List;
+
+interface EntityFinderSingleResult<T> extends EntityFinder<T, T> {
+}

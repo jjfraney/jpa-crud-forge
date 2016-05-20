@@ -1,8 +1,10 @@
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.function.Supplier;
 
-public class RemoverImpl<T> implements Remover<T> {
+@Dependent
+public class EntityRemoverImpl<T> implements EntityRemover<T> {
 	@Inject
 	private EntityManager entityManager;
 

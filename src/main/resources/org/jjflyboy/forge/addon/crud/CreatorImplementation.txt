@@ -1,9 +1,11 @@
 import java.util.function.Supplier;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-public class CreatorImpl<T> implements Creator<T> {
+@Dependent
+public class EntityCreatorImpl<T> implements EntityCreator<T> {
 	@Inject
 	private EntityManager entityManager;
 

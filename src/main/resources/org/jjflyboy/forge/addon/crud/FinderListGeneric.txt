@@ -1,9 +1,11 @@
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-public class FinderListResult<T> implements IFinder<T, List<T>> {
+@Dependent
+public class EntityFinderListResultImpl<T> implements EntityFinderListResult<T> {
 
 	@Inject
 	private EntityManager entityManager;

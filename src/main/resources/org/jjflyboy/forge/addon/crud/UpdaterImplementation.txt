@@ -1,9 +1,11 @@
 import java.util.function.Supplier;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-public class UpdaterImpl<T> implements Updater<T> {
+@Dependent
+public class EntityUpdaterImpl<T> implements EntityUpdater<T> {
 	@Inject
 	private EntityManager entityManager;
 

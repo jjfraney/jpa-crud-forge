@@ -1,3 +1,0 @@
-
-public class ${entity.getName()}RemoverImpl extends RemoverImpl<${entity.getName()}> implements ${entity.getName()}Remover {
-}

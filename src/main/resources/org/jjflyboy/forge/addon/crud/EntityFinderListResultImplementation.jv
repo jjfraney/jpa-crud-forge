@@ -1,0 +1,8 @@
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class ${entity.getName()}FinderListResultImpl
+	extends EntityFinderListResultImpl<${entity.getName()}>
+	implements ${entity.getName()}FinderListResult {
+}

@@ -1,0 +1,5 @@
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class ${entity.getName()}CreatorImpl extends EntityCreatorImpl<${entity.getName()}> implements ${entity.getName()}Creator {
+}

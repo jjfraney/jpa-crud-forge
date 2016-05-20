@@ -1,0 +1,8 @@
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class ${entity.getName()}RemoverImpl
+	extends EntityRemoverImpl<${entity.getName()}>
+	implements ${entity.getName()}Remover {
+}
