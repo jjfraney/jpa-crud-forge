@@ -1,11 +1,8 @@
 == jpa-crud
 :idprefix: id_ 
 (choose one, do not modify, then add a second sentence with a brief description, starting with - "The jpa-crud addon enables blah blah...)
-This addon provides *standalone* functionality, and *exports services* for use in other addons. 
-This addon provides *standalone* functionality.
-This addon *exports services* for use in other addons. 
-This addon *provides classes* for use in other addons. 
-This addon is a 'Furnace container' that provides *lifecycle* and *service registry* support for dependent addons.
+This addon provides *standalone* functionality.  The jpa-crud addon generates create, read, update and remove operations as
+CDI beans for injection to your model logic.
         
 === Dependencies: None (or)
 === Depends on
@@ -22,44 +19,84 @@ This addon is a 'Furnace container' that provides *lifecycle* and *service regis
 
 == Setup
 
-This Addon requires the following installation steps.
+This addon should be installed before using.
 
-=== Add configuration to pom.xml 
+Setup jpa: jpa-setup.
+Setup cdi: cdi-setup.
+Create some jpa entities.
+This addon requires jpa entities in the project.
 
-To use this addon, you must add it as a dependency in the *pom.xml* of your `forge-addon` classified artifact:
-(Make sure the dependency is put all the way to the left, and uses 3 spaces for indentation of GAV)
-[source,xml]
-----
-<dependency>
-   <groupId>org.jjflyboy.forge.addon.crud</groupId>
-   <artifactId>jpa-crud</artifactId>
-   <classifier>forge-addon</classifier>
-   <version>${version}</version>
-</dependency>
-----
 == Features
-ABCFactory for simple ABC blah:: 
-Allows for blah blah
+
+Creates <Entity>Creator, <Entity>Finder, <Entity>Updater, and <Entity>Remover bean classes.
+
+For example, assume a JPA entity named 'Person'.  The generated bean classes would be used as follows:
+
+To create a Person and persist it:
 +
 [source,java]
 ----
-@Inject private ABCFactory factory;
-ABC abc = factory.createABC();
+@Inject PersonCreator creator;
+
+creator.create(() -> {
+		Person p = .....;
+		return p;
+	});
 ----
 +
-[TIP] 
-====
-If your addon uses a container that does not support "@Inject" annotations, services such as the `ABCFactory` may also be 
-accessed via the `AddonRegistry`:
+
+To find a Person
+[source.java]
 ----
-Imported<ABCFactory> imported = addonRegistry.getServices(ABCFactory.class);
-ABCFactory factory = imported.get();
+/**
+ * a reusable custom query specification.
+ */
+class PersonByNameSpecification extends Specification<Person> {
+	private String name;
+	PersonByNameSpecification(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public TypedQuery<Configuration> asQuery(EntityManager entityManager) {
+		
+		TypedQuery<Configuration> query = entityManager.createQuery("select c from Configuration c where c.name = :name", Configuration.class);
+		query.setParameter("name", name);
+		return query;
+	}
+}
+
+@Inject PersonFinderListResult finder;
+List<Person> people = finder.find(new PersonByNameSpecification("john"));
 ----
-==== 
-Creating a new XYZ instance:: 
-Causes XYZ to occur
 +
-[source,java]
+
+To remove a Person
+
+[source.java]
 ----
-XYZ xyz = factory.createXYZ();
+@Inject
+private PersonRemover remover;
+Person person = ....;
+remover.remove() -> person);
+
 ----
++
+
+To update a Person
+
+[source.java]
+----
+@Inject
+private PersonUpdater updater;
+Person detachedPerson = ....;
+updater.update(() -> detachedPerson);
+
+----
++
+
+== Usage
+
+Run inside forge with this command:
+crud-generate --targets org.example.model.Person
+
