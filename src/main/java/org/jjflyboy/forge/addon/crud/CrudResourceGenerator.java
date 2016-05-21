@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -303,6 +304,7 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		JavaClassSource producer = Roaster.create(JavaClassSource.class)
 				.setPackage(targetPackageName)
 				.setName("EntityManagerProducer");
+		producer.addAnnotation(ApplicationScoped.class);
 
 		//producer.addImport(EntityManager.class);
 		FieldSource<JavaClassSource> emfield = producer.addField()
@@ -323,7 +325,7 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 				.setPublic()
 				.setBody("return entityManager;");
 		method.addAnnotation(Produces.class);
-		producer.addAnnotation(ApplicationScoped.class);
+		method.addAnnotation(RequestScoped.class);
 
 		return producer;
 	}
