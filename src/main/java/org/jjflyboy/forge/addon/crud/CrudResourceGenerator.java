@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.templates.Template;
@@ -43,8 +42,8 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 	ResourceFactory resourceFactory;
 
 	@Override
-	public List<JavaClassSource> generateFrom(CrudToolGenerationContext context) throws Exception {
-		List<JavaClassSource> result = new ArrayList<>();
+	public List<JavaSource<?>> generateFrom(CrudToolGenerationContext context) throws Exception {
+		List<JavaSource<?>> result = new ArrayList<>();
 
 		JavaClassSource entity = context.getEntity();
 		String persistenceUnitName = context.getPersistenceUnitName();
@@ -54,42 +53,32 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		map.put("persistenceUnitName", persistenceUnitName);
 		map.put("context", context);
 
-		List<JavaSource<?>> javaSources = new ArrayList<>();
-
 		// these are common to all entities
-		javaSources.add(createEntityManagerProducer(map));
-		javaSources.add(createCreatorInterface(map));
-		javaSources.add(createCreatorImpl(map));
-		javaSources.add(createUpdaterInterface(map));
-		javaSources.add(createUpdaterImpl(map));
-		javaSources.add(createRemoverInterface(map));
-		javaSources.add(createRemoverImpl(map));
-		javaSources.add(createSpecificationInterface(map));
-		javaSources.add(createFinderInterface(map));
-		javaSources.add(createFinderListResultInterface(map));
-		javaSources.add(createFinderSingleResultInterface(map));
-		javaSources.add(createFindListGeneric(map));
-		javaSources.add(createFindSingleGeneric(map));
+		result.add(createEntityManagerProducer(map));
+		result.add(createCreatorInterface(map));
+		result.add(createCreatorImpl(map));
+		result.add(createUpdaterInterface(map));
+		result.add(createUpdaterImpl(map));
+		result.add(createRemoverInterface(map));
+		result.add(createRemoverImpl(map));
+		result.add(createSpecificationInterface(map));
+		result.add(createFinderInterface(map));
+		result.add(createFinderListResultInterface(map));
+		result.add(createFinderSingleResultInterface(map));
+		result.add(createFindListGeneric(map));
+		result.add(createFindSingleGeneric(map));
 
 		// these depend on entity
-		javaSources.add(createCreatorEntityInterface(map));
-		javaSources.add(createUpdaterEntityInterface(map));
-		javaSources.add(createRemoverEntityInterface(map));
-		javaSources.add(createEntityFinderListResultInterface(map));
-		javaSources.add(createEntityFinderSingleResultInterface(map));
-
-		JavaSourceFacet javaSourceFacet = context.getProject().getFacet(JavaSourceFacet.class);
-		for(JavaSource<?> js: javaSources) {
-			javaSourceFacet.saveJavaSource(js);
-		}
-
+		result.add(createCreatorEntityInterface(map));
+		result.add(createUpdaterEntityInterface(map));
+		result.add(createRemoverEntityInterface(map));
+		result.add(createEntityFinderListResultInterface(map));
+		result.add(createEntityFinderSingleResultInterface(map));
 		result.add(createCreatorEntityImpl(map));
 		result.add(createUpdaterEntityImplementation(map));
 		result.add(createRemoverEntityImpl(map));
 		result.add(createEntityFinderListResultImplementation(map));
 		result.add(createEntityFinderSingleResultImplementation(map));
-		// result.add(createEntityAbstractBuilder(map));
-		// result.add(createEntityBuilder(map));
 
 		return result;
 	}

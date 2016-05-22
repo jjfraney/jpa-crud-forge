@@ -12,6 +12,7 @@ import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
 import org.jboss.forge.addon.javaee.jpa.ui.setup.JPASetupWizard;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
+import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
@@ -33,6 +34,7 @@ import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.roaster.model.Member;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceCommonDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceUnitCommon;
 import org.jjflyboy.forge.addon.crud.CrudToolGenerationContext;
@@ -137,22 +139,29 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 	public Result execute(final UIExecutionContext context) throws Exception {
 		UIContext uiContext = context.getUIContext();
 		CrudToolGenerationContext generationContext = createContextFor(uiContext);
-		Set<JavaClassSource> endpoints = generateCrud(generationContext);
+		Set<JavaSource<?>> generated = generateCrud(generationContext);
 		Project project = generationContext.getProject();
 		JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
 
-		for (JavaClassSource javaClass : endpoints) {
-			javaSourceFacet.saveJavaSource(javaClass);
+		// save the generated classes
+		for (JavaSource<?> javaClass : generated) {
+			// don't overwrite
+			JavaResource js = javaSourceFacet.getJavaResource(javaClass);
+			if (js == null || !js.exists()) {
+				javaSourceFacet.saveJavaSource(javaClass);
+			}
 		}
+		String path = packageName.getValue().replace('.', '/');
+		uiContext.setSelection(javaSourceFacet.getSourceDirectory().getChild(path));
 		return Results.success("crud created");
 	}
 
-	private Set<JavaClassSource> generateCrud(CrudToolGenerationContext generationContext) throws Exception {
+	private Set<JavaSource<?>> generateCrud(CrudToolGenerationContext generationContext) throws Exception {
 		CrudToolResourceGenerator selectedGenerator = generator.getValue();
-		Set<JavaClassSource> classes = new HashSet<>();
+		Set<JavaSource<?>> classes = new HashSet<>();
 		for (JavaClassSource target : targets.getValue()) {
 			generationContext.setEntity(target);
-			List<JavaClassSource> artifacts = selectedGenerator.generateFrom(generationContext);
+			List<JavaSource<?>> artifacts = selectedGenerator.generateFrom(generationContext);
 			classes.addAll(artifacts);
 		}
 		return classes;
