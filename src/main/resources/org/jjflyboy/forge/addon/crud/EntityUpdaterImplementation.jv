@@ -1,6 +1,9 @@
 
 import javax.enterprise.context.ApplicationScoped;
 
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityUpdaterImpl;
+</#if>
+
 @ApplicationScoped
 public class ${entity.getName()}UpdaterImpl
 	extends EntityUpdaterImpl<${entity.getName()}>

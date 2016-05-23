@@ -1,4 +1,4 @@
 import java.util.List;
 
-interface EntityFinderListResult<T> extends EntityFinder<T, List<T>> {
+public interface EntityFinderListResult<T> extends EntityFinder<T, List<T>> {
 }

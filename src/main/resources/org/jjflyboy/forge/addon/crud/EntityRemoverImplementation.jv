@@ -1,6 +1,9 @@
 
 import javax.enterprise.context.ApplicationScoped;
 
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityRemoverImpl;
+</#if>
+
 @ApplicationScoped
 public class ${entity.getName()}RemoverImpl
 	extends EntityRemoverImpl<${entity.getName()}>

@@ -43,7 +43,6 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 
 	@Override
 	public List<JavaSource<?>> generateFrom(CrudToolGenerationContext context) throws Exception {
-		List<JavaSource<?>> result = new ArrayList<>();
 
 		JavaClassSource entity = context.getEntity();
 		String persistenceUnitName = context.getPersistenceUnitName();
@@ -51,35 +50,48 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		Map<Object, Object> map = new HashMap<>();
 		map.put("entity", entity);
 		map.put("persistenceUnitName", persistenceUnitName);
+		map.put("baseClassPackageName", context.getBaseClassPackageName());
+		map.put("targetPackageName", context.getTargetPackageName());
 		map.put("context", context);
 
 		// these are common to all entities
-		result.add(createEntityManagerProducer(map));
-		result.add(createCreatorInterface(map));
-		result.add(createCreatorImpl(map));
-		result.add(createUpdaterInterface(map));
-		result.add(createUpdaterImpl(map));
-		result.add(createRemoverInterface(map));
-		result.add(createRemoverImpl(map));
-		result.add(createSpecificationInterface(map));
-		result.add(createFinderInterface(map));
-		result.add(createFinderListResultInterface(map));
-		result.add(createFinderSingleResultInterface(map));
-		result.add(createFindListGeneric(map));
-		result.add(createFindSingleGeneric(map));
+		List<JavaSource<?>> baseClasses = new ArrayList<>();
+		baseClasses.add(createEntityManagerProducer(map));
+		baseClasses.add(createCreatorInterface(map));
+		baseClasses.add(createCreatorImpl(map));
+		baseClasses.add(createUpdaterInterface(map));
+		baseClasses.add(createUpdaterImpl(map));
+		baseClasses.add(createRemoverInterface(map));
+		baseClasses.add(createRemoverImpl(map));
+		baseClasses.add(createSpecificationInterface(map));
+		baseClasses.add(createFinderInterface(map));
+		baseClasses.add(createFinderListResultInterface(map));
+		baseClasses.add(createFinderSingleResultInterface(map));
+		baseClasses.add(createFindListGeneric(map));
+		baseClasses.add(createFindSingleGeneric(map));
+		for(JavaSource<?> js: baseClasses) {
+			js.setPackage(context.getBaseClassPackageName());
+		}
 
+		List<JavaSource<?>> entityCrudClasses = new ArrayList<>();
 		// these depend on entity
-		result.add(createCreatorEntityInterface(map));
-		result.add(createUpdaterEntityInterface(map));
-		result.add(createRemoverEntityInterface(map));
-		result.add(createEntityFinderListResultInterface(map));
-		result.add(createEntityFinderSingleResultInterface(map));
-		result.add(createCreatorEntityImpl(map));
-		result.add(createUpdaterEntityImplementation(map));
-		result.add(createRemoverEntityImpl(map));
-		result.add(createEntityFinderListResultImplementation(map));
-		result.add(createEntityFinderSingleResultImplementation(map));
+		entityCrudClasses.add(createCreatorEntityInterface(map));
+		entityCrudClasses.add(createUpdaterEntityInterface(map));
+		entityCrudClasses.add(createRemoverEntityInterface(map));
+		entityCrudClasses.add(createEntityFinderListResultInterface(map));
+		entityCrudClasses.add(createEntityFinderSingleResultInterface(map));
+		entityCrudClasses.add(createCreatorEntityImpl(map));
+		entityCrudClasses.add(createUpdaterEntityImplementation(map));
+		entityCrudClasses.add(createRemoverEntityImpl(map));
+		entityCrudClasses.add(createEntityFinderListResultImplementation(map));
+		entityCrudClasses.add(createEntityFinderSingleResultImplementation(map));
+		for(JavaSource<?> js: entityCrudClasses) {
+			js.setPackage(context.getTargetPackageName());
+		}
 
+		List<JavaSource<?>> result = new ArrayList<>();
+		result.addAll(entityCrudClasses);
+		result.addAll(baseClasses);
 		return result;
 	}
 
@@ -192,7 +204,6 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 
 	private void finalizeGeneration(Map<Object, Object> map, JavaSource<?> resource) {
 		resource.addImport(((JavaClassSource)map.get("entity")).getQualifiedName());
-		resource.setPackage(((CrudToolGenerationContext)map.get("context")).getTargetPackageName());
 	}
 
 
@@ -235,7 +246,6 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		source.setPackage(((CrudToolGenerationContext)map.get("context")).getTargetPackageName());
 		return source;
 	}
 
@@ -287,11 +297,9 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 
 	private JavaClassSource createEntityManagerProducer(Map<Object, Object> map) {
 		CrudToolGenerationContext context = (CrudToolGenerationContext)map.get("context");
-		String targetPackageName = context.getTargetPackageName();
 		String unitName = (String) map.get("persistenceUnitName");
 
 		JavaClassSource producer = Roaster.create(JavaClassSource.class)
-				.setPackage(targetPackageName)
 				.setName("EntityManagerProducer");
 		producer.addAnnotation(ApplicationScoped.class);
 

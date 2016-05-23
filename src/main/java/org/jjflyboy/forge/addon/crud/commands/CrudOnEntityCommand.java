@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
 import org.jboss.forge.addon.javaee.jpa.ui.setup.JPASetupWizard;
+import org.jboss.forge.addon.parser.java.beans.ProjectOperations;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
@@ -32,6 +33,7 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
+import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.Member;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
@@ -59,13 +61,21 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 	private UIInput<String> packageName;
 
 	@Inject
+	@WithAttributes(label = "Base Class package name", required = false)
+	private UIInput<String> baseClassPackageName;
+
+	@Inject
 	@WithAttributes(label = "Overwrite existing classes?", enabled = false, defaultValue = "false")
 	private UIInput<Boolean> overwrite;
 
 	@Inject
 	private CrudToolResourceGenerator defaultResourceGenerator;
 
+	@Inject
+	private ProjectOperations projectOperations;
+
 	@Override
+
 	public UICommandMetadata getMetadata(UIContext context) {
 		return Metadata.forCommand(CrudOnEntityCommand.class).name("Crud: generate")
 				.category(Categories.create("crud"));
@@ -101,8 +111,19 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 			persistenceUnit.setValueChoices(persistenceUnits).setDefaultValue(persistenceUnits.get(0));
 		}
 
-		// TODO: May detect where @Path resources are located
 		packageName.setDefaultValue(javaSourceFacet.getBasePackage() + ".crud");
+
+		String baseClassPackage = null;
+		for (JavaResource x : projectOperations.getProjectInterfaces(project)) {
+
+			JavaType<?> jt = x.getJavaType();
+			if(jt.getName().equals("EntityFinder")) {
+				baseClassPackage = jt.getPackage();
+			}
+		}
+		baseClassPackage = baseClassPackage == null ? javaSourceFacet.getBasePackage() + ".crud.base"
+				: baseClassPackage;
+		baseClassPackageName.setDefaultValue(baseClassPackage);
 
 		generator.setDefaultValue(defaultResourceGenerator);
 		if (context.getProvider().isGUI()) {
@@ -120,7 +141,12 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 				}
 			});
 		}
-		builder.add(targets).add(generator).add(packageName).add(persistenceUnit).add(overwrite);
+		builder.add(targets)
+		.add(generator)
+		.add(packageName)
+		.add(baseClassPackageName)
+		.add(persistenceUnit)
+		.add(overwrite);
 	}
 
 	private boolean isEntityWithSimpleKey(JavaClassSource entity) {
@@ -177,6 +203,7 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 		generationContext.setProject(getSelectedProject(context));
 		generationContext.setPersistenceUnitName(persistenceUnit.getValue());
 		generationContext.setTargetPackageName(packageName.getValue());
+		generationContext.setBaseClassPackageName(baseClassPackageName.getValue());
 		return generationContext;
 	}
 

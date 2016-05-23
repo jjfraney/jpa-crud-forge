@@ -1,4 +1,3 @@
-import java.util.List;
 
-interface EntityFinderSingleResult<T> extends EntityFinder<T, T> {
+public interface EntityFinderSingleResult<T> extends EntityFinder<T, T> {
 }

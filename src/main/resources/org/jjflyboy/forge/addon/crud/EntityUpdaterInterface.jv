@@ -1,2 +1,6 @@
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityUpdater;
+</#if>
+
 public interface ${entity.getName()}Updater extends EntityUpdater<${entity.getName()}> {
 }

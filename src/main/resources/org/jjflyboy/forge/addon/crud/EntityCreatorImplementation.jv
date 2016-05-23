@@ -1,5 +1,7 @@
 import javax.enterprise.context.ApplicationScoped;
 
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityCreatorImpl;
+</#if>
 @ApplicationScoped
 public class ${entity.getName()}CreatorImpl extends EntityCreatorImpl<${entity.getName()}> implements ${entity.getName()}Creator {
 }

@@ -1,6 +1,9 @@
 
 import javax.enterprise.context.ApplicationScoped;
 
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityFinderListResultImpl;
+</#if>
+
 @ApplicationScoped
 public class ${entity.getName()}FinderListResultImpl
 	extends EntityFinderListResultImpl<${entity.getName()}>

@@ -1,2 +1,6 @@
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityCreator;
+</#if>
+
 public interface ${entity.getName()}Creator extends EntityCreator<${entity.getName()}> {
 }
