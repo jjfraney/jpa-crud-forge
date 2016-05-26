@@ -1,5 +1,6 @@
 package org.jjflyboy.forge.addon.crud.commands;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,7 +92,7 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 		List<JavaClassSource> allEntities = persistenceFacet.getAllEntities();
 		List<JavaClassSource> supportedEntities = new ArrayList<>();
 		for (JavaClassSource entity : allEntities) {
-			if (isEntityWithSimpleKey(entity)) {
+			if (isEntityWithSimpleKey(entity, javaSourceFacet)) {
 				supportedEntities.add(entity);
 			}
 		}
@@ -149,7 +150,7 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 		.add(overwrite);
 	}
 
-	private boolean isEntityWithSimpleKey(JavaClassSource entity) {
+	private boolean isEntityWithSimpleKey(JavaClassSource entity, JavaSourceFacet javaSourceFacet) {
 		for (Member<?> member : entity.getMembers()) {
 			// FORGE-823 Only add entities with @Id as valid entities for crud
 			// resource generation.
@@ -158,7 +159,25 @@ public class CrudOnEntityCommand extends AbstractProjectCommand implements Prere
 				return true;
 			}
 		}
+		JavaClassSource superClass = getSuperClass(entity, javaSourceFacet);
+		if (superClass != null) {
+			return isEntityWithSimpleKey(superClass, javaSourceFacet);
+		}
 		return false;
+	}
+
+	private JavaClassSource getSuperClass(JavaClassSource entity, JavaSourceFacet javaSourceFacet) {
+		String superClass = entity.getSuperType();
+		JavaClassSource result = null;
+		if (!superClass.equals(Object.class.getName())) {
+			try {
+				result = javaSourceFacet.getJavaResource(superClass).getJavaType();
+			} catch (FileNotFoundException e) {
+				// hopefully we won't see this problem.
+				throw new RuntimeException();
+			}
+		}
+		return result;
 	}
 
 	@Override
