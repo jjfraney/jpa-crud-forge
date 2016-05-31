@@ -1,5 +1,4 @@
-import java.util.function.Supplier;
 
 public interface EntityRemover<T> {
-	void remove(Supplier<T> s);
+	void remove(T t);
 }

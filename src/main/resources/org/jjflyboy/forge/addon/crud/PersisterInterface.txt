@@ -1,5 +1,4 @@
-import java.util.function.Supplier;
 
 public interface EntityPersister<T> {
-	T persist(Supplier<T> entity);
+	T persist(T entity);
 }

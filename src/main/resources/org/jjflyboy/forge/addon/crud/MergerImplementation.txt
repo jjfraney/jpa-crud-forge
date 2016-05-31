@@ -1,4 +1,3 @@
-import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -10,7 +9,7 @@ public class EntityMergerImpl<T> implements EntityMerger<T> {
 	private EntityManager entityManager;
 
 	@Override
-	public T merge(Supplier<T> detached) {
-		return entityManager.merge(detached.get());
+	public T merge(T detached) {
+		return entityManager.merge(detached);
 	}
 }

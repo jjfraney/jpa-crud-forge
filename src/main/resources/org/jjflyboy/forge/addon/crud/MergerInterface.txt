@@ -1,5 +1,4 @@
-import java.util.function.Supplier;
 
 public interface EntityMerger<T> {
-	T merge(Supplier<T> detached);
+	T merge(T detached);
 }

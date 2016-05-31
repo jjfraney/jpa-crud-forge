@@ -1,4 +1,3 @@
-import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -10,9 +9,8 @@ public class EntityPersisterImpl<T> implements EntityPersister<T> {
 	private EntityManager entityManager;
 
 	@Override
-	public T persist(Supplier<T> s) {
-		T u = s.get();
-		entityManager.persist(u);
-		return u;
+	public T persist(T t) {
+		entityManager.persist(t);
+		return t;
 	}
 }
