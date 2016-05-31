@@ -1,10 +1,6 @@
 package org.jjflyboy.forge.addon.crud;
 
 import java.io.IOException;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +23,6 @@ import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.FieldSource;
-import org.jboss.forge.roaster.model.source.JavaAnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaInterfaceSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
@@ -132,24 +127,6 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return generateInterfaceFromTextFile(map, "Specification.txt");
 	}
 
-	private JavaClassSource createEntityBuilder(Map<Object, Object> map) {
-		return generateClassFromTemplate(map,  "EntityCreateBuilder.jv");
-	}
-
-
-	private JavaClassSource createEntityAbstractBuilder(Map<Object, Object> map) {
-		return generateClassFromTemplate(map,  "EntityAbstractBuilder.jv");
-	}
-
-
-	private JavaAnnotationSource createBusinessKeyAnnotation(String packageName) {
-		JavaAnnotationSource businessKeyAnnotation = Roaster.create(JavaAnnotationSource.class)
-				.setName("BusinessKey");
-		businessKeyAnnotation.addAnnotation(Retention.class).setEnumValue(RetentionPolicy.RUNTIME);
-		businessKeyAnnotation.addAnnotation(Target.class).setEnumValue(ElementType.FIELD, ElementType.METHOD);
-		businessKeyAnnotation.setPackage(packageName);
-		return businessKeyAnnotation;
-	}
 
 	private JavaSource<?> createMergerImpl(Map<Object, Object> map) {
 		return generateClassFromTextFile(map, "MergerImplementation.txt");
@@ -259,36 +236,6 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 
 	private JavaInterfaceSource createMergerInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTextFile(map, "MergerInterface.txt");
-	}
-
-	private JavaInterfaceSource createCreateBuilderInterface(Map<Object, Object> map) {
-		CrudToolGenerationContext context = (CrudToolGenerationContext)map.get("context");
-		String targetPackageName = context.getTargetPackageName();
-		JavaInterfaceSource source = Roaster.create(JavaInterfaceSource.class)
-				.setPackage(targetPackageName)
-				.setName("ICreateBuilder");
-		source.addTypeVariable()
-		.setName("T");
-		source.addMethod()
-		.setName("apply")
-		.setReturnType("T");
-		return source;
-	}
-
-
-	private JavaInterfaceSource createUpdateBuilderInterface(Map<Object, Object> map) {
-		CrudToolGenerationContext context = (CrudToolGenerationContext)map.get("context");
-		String targetPackageName = context.getTargetPackageName();
-		JavaInterfaceSource source = Roaster.create(JavaInterfaceSource.class)
-				.setPackage(targetPackageName)
-				.setName("IUpdateBuilder");
-		source.addTypeVariable()
-		.setName("T");
-		source.addMethod()
-		.setName("apply")
-		.setReturnType("T")
-		.addParameter("T", "t");
-		return source;
 	}
 
 	private JavaInterfaceSource createFinderInterface(Map<Object, Object> map) {

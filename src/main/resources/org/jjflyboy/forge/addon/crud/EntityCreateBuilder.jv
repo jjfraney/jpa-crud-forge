@@ -1,4 +1,0 @@
-public class ${entity.getName()}CreateBuilder
-	extends ${entity.getName()}AbstractBuilder
-	implements EntityCreateBuilder<${entity.getName()} {
-}
