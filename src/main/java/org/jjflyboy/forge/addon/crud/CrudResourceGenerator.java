@@ -57,10 +57,10 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		// these are common to all entities
 		List<JavaSource<?>> baseClasses = new ArrayList<>();
 		baseClasses.add(createEntityManagerProducer(map));
-		baseClasses.add(createCreatorInterface(map));
-		baseClasses.add(createCreatorImpl(map));
-		baseClasses.add(createUpdaterInterface(map));
-		baseClasses.add(createUpdaterImpl(map));
+		baseClasses.add(createPersisterInterface(map));
+		baseClasses.add(createPersisterImpl(map));
+		baseClasses.add(createMergerInterface(map));
+		baseClasses.add(createMergerImpl(map));
 		baseClasses.add(createRemoverInterface(map));
 		baseClasses.add(createRemoverImpl(map));
 		baseClasses.add(createSpecificationInterface(map));
@@ -75,13 +75,13 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 
 		List<JavaSource<?>> entityCrudClasses = new ArrayList<>();
 		// these depend on entity
-		entityCrudClasses.add(createCreatorEntityInterface(map));
-		entityCrudClasses.add(createUpdaterEntityInterface(map));
+		entityCrudClasses.add(createPersisterEntityInterface(map));
+		entityCrudClasses.add(createMergerEntityInterface(map));
 		entityCrudClasses.add(createRemoverEntityInterface(map));
 		entityCrudClasses.add(createEntityFinderListResultInterface(map));
 		entityCrudClasses.add(createEntityFinderSingleResultInterface(map));
-		entityCrudClasses.add(createCreatorEntityImpl(map));
-		entityCrudClasses.add(createUpdaterEntityImplementation(map));
+		entityCrudClasses.add(createPersisterEntityImpl(map));
+		entityCrudClasses.add(createMergerEntityImplementation(map));
 		entityCrudClasses.add(createRemoverEntityImpl(map));
 		entityCrudClasses.add(createEntityFinderListResultImplementation(map));
 		entityCrudClasses.add(createEntityFinderSingleResultImplementation(map));
@@ -151,12 +151,12 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return businessKeyAnnotation;
 	}
 
-	private JavaSource<?> createUpdaterImpl(Map<Object, Object> map) {
-		return generateClassFromTextFile(map, "UpdaterImplementation.txt");
+	private JavaSource<?> createMergerImpl(Map<Object, Object> map) {
+		return generateClassFromTextFile(map, "MergerImplementation.txt");
 	}
 
-	private JavaSource<?> createCreatorImpl(Map<Object, Object> map) {
-		return generateClassFromTextFile(map, "CreatorImplementation.txt");
+	private JavaSource<?> createPersisterImpl(Map<Object, Object> map) {
+		return generateClassFromTextFile(map, "PersisterImplementation.txt");
 	}
 
 	private JavaSource<?> createRemoverImpl(Map<Object, Object> map) {
@@ -171,20 +171,20 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return generateClassFromTemplate(map, "EntityRemoverImplementation.jv");
 	}
 
-	private JavaSource<?> createUpdaterEntityInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTemplate(map, "EntityUpdaterInterface.jv");
+	private JavaSource<?> createMergerEntityInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTemplate(map, "EntityMergerInterface.jv");
 	}
 
-	private JavaClassSource createUpdaterEntityImplementation(Map<Object, Object> map) {
-		return generateClassFromTemplate(map, "EntityUpdaterImplementation.jv");
+	private JavaClassSource createMergerEntityImplementation(Map<Object, Object> map) {
+		return generateClassFromTemplate(map, "EntityMergerImplementation.jv");
 	}
 
-	private JavaSource<?> createCreatorEntityInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTemplate(map, "EntityCreatorInterface.jv");
+	private JavaSource<?> createPersisterEntityInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTemplate(map, "EntityPersisterInterface.jv");
 	}
 
-	private JavaClassSource createCreatorEntityImpl(Map<Object, Object> map) {
-		return generateClassFromTemplate(map, "EntityCreatorImplementation.jv");
+	private JavaClassSource createPersisterEntityImpl(Map<Object, Object> map) {
+		return generateClassFromTemplate(map, "EntityPersisterImplementation.jv");
 	}
 
 	private JavaClassSource generateClassFromTemplate(Map<Object, Object> map, String template) {
@@ -249,16 +249,16 @@ public class CrudResourceGenerator implements CrudToolResourceGenerator {
 		return source;
 	}
 
-	private JavaInterfaceSource createCreatorInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTextFile(map, "CreatorInterface.txt");
+	private JavaInterfaceSource createPersisterInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTextFile(map, "PersisterInterface.txt");
 	}
 
 	private JavaInterfaceSource createRemoverInterface(Map<Object, Object> map) {
 		return generateInterfaceFromTextFile(map, "RemoverInterface.txt");
 	}
 
-	private JavaInterfaceSource createUpdaterInterface(Map<Object, Object> map) {
-		return generateInterfaceFromTextFile(map, "UpdaterInterface.txt");
+	private JavaInterfaceSource createMergerInterface(Map<Object, Object> map) {
+		return generateInterfaceFromTextFile(map, "MergerInterface.txt");
 	}
 
 	private JavaInterfaceSource createCreateBuilderInterface(Map<Object, Object> map) {

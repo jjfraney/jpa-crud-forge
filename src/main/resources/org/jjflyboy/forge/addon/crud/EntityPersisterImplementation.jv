@@ -1,0 +1,7 @@
+import javax.enterprise.context.ApplicationScoped;
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityPersisterImpl;
+</#if>
+@ApplicationScoped
+public class ${entity.getName()}PersisterImpl extends EntityPersisterImpl<${entity.getName()}> implements ${entity.getName()}Persister {
+}

@@ -1,0 +1,6 @@
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityPersister;
+</#if>
+
+public interface ${entity.getName()}Persister extends EntityPersister<${entity.getName()}> {
+}

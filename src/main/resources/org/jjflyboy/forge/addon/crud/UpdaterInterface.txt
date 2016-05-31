@@ -1,5 +1,0 @@
-import java.util.function.Supplier;
-
-public interface EntityUpdater<T> {
-	T update(Supplier<T> detached);
-}

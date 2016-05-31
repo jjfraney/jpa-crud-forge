@@ -5,14 +5,12 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 @Dependent
-public class EntityCreatorImpl<T> implements EntityCreator<T> {
+public class EntityMergerImpl<T> implements EntityMerger<T> {
 	@Inject
 	private EntityManager entityManager;
 
 	@Override
-	public T create(Supplier<T> s) {
-		T u = s.get();
-		entityManager.persist(u);
-		return u;
+	public T merge(Supplier<T> detached) {
+		return entityManager.merge(detached.get());
 	}
 }

@@ -1,0 +1,6 @@
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityMerger;
+</#if>
+
+public interface ${entity.getName()}Merger extends EntityMerger<${entity.getName()}> {
+}

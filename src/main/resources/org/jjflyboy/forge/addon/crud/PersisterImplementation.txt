@@ -5,12 +5,14 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 @Dependent
-public class EntityUpdaterImpl<T> implements EntityUpdater<T> {
+public class EntityPersisterImpl<T> implements EntityPersister<T> {
 	@Inject
 	private EntityManager entityManager;
 
 	@Override
-	public T update(Supplier<T> detached) {
-		return entityManager.merge(detached.get());
+	public T persist(Supplier<T> s) {
+		T u = s.get();
+		entityManager.persist(u);
+		return u;
 	}
 }
