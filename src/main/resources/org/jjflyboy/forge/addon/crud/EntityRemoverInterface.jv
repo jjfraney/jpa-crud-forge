@@ -1,6 +1,0 @@
-
-<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityRemover;
-</#if>
-
-public interface ${entity.getName()}Remover extends EntityRemover<${entity.getName()}> {
-}

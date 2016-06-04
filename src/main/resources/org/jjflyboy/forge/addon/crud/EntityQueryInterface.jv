@@ -1,0 +1,6 @@
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityQuery;
+</#if>
+
+public interface ${entity.getName()}Query extends EntityQuery<${entity.getName()}> {
+}

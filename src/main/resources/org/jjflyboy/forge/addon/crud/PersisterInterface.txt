@@ -1,4 +1,0 @@
-
-public interface EntityPersister<T> {
-	T persist(T entity);
-}

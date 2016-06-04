@@ -1,0 +1,11 @@
+
+import javax.enterprise.context.ApplicationScoped;
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityOperationsImpl;
+</#if>
+
+@ApplicationScoped
+public class ${entity.getName()}OperationsImpl
+	extends EntityOperationsImpl<${entity.getName()}>
+	implements ${entity.getName()}Operations {
+}

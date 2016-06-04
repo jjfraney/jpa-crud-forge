@@ -1,20 +1,28 @@
+
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 @Dependent
-public class EntityFinderSingleResultImpl<T> implements EntityFinderSingleResult<T> {
+public class EntityQueryImpl<T> implements EntityQuery<T> {
 
 	@Inject
 	private EntityManager entityManager;
 
 	@Override
-	public T find(Specification<T> specification) {
+	public T findOne(Specification<T> specification) {
 		try {
 			return specification.asQuery(entityManager).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
+	}
+
+	@Override
+	public List<T> findMany(Specification<T> specification) {
+		return specification.asQuery(entityManager).getResultList();
 	}
 }

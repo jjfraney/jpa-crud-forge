@@ -1,0 +1,11 @@
+
+import javax.enterprise.context.ApplicationScoped;
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityQueryImpl;
+</#if>
+
+@ApplicationScoped
+public class ${entity.getName()}QueryImpl
+	extends EntityQueryImpl<${entity.getName()}>
+	implements ${entity.getName()}Query {
+}

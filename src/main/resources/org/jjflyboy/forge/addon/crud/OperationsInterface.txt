@@ -1,0 +1,13 @@
+
+/**
+ * Common entity manager operations.
+ */
+ 
+public interface EntityOperations<T> {
+
+	T persist(T entity);
+
+	T merge(T detached);
+
+	void remove(T t);
+}

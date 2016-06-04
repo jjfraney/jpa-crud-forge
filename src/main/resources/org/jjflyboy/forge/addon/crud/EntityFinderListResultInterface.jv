@@ -1,6 +1,0 @@
-
-<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityFinderListResult;
-</#if>
-
-public interface ${entity.getName()}FinderListResult extends EntityFinderListResult<${entity.getName()}> {
-}

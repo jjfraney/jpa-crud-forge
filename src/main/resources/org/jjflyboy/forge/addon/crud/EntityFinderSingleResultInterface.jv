@@ -1,6 +1,0 @@
-
-<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityFinderSingleResult;
-</#if>
-
-public interface ${entity.getName()}FinderSingleResult extends EntityFinderSingleResult<${entity.getName()}> {
-}

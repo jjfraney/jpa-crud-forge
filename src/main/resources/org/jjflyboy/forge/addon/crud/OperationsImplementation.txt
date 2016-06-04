@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 @Dependent
-public class EntityPersisterImpl<T> implements EntityPersister<T> {
+public class EntityOperationsImpl<T> implements EntityOperations<T> {
 	@Inject
 	private EntityManager entityManager;
 
@@ -13,4 +13,15 @@ public class EntityPersisterImpl<T> implements EntityPersister<T> {
 		entityManager.persist(t);
 		return t;
 	}
+
+	@Override
+	public T merge(T detached) {
+		return entityManager.merge(detached);
+	}
+
+	@Override
+	public void remove(T t) {
+		entityManager.remove(t);
+	}
+
 }

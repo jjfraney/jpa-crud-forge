@@ -1,4 +1,0 @@
-
-public interface EntityRemover<T> {
-	void remove(T t);
-}

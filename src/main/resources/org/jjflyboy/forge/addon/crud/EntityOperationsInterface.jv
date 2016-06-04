@@ -1,0 +1,6 @@
+
+<#if baseClassPackageName != targetPackageName>import ${baseClassPackageName}.EntityOperations;
+</#if>
+
+public interface ${entity.getName()}Operations extends EntityOperations<${entity.getName()}> {
+}

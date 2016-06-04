@@ -1,0 +1,7 @@
+
+import java.util.List;
+
+public interface EntityQuery<T> {
+	T findOne(Specification<T> specification);
+	List<T> findMany(Specification<T> specification);
+}
