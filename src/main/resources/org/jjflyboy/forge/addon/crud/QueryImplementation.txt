@@ -14,11 +14,7 @@ public class EntityQueryImpl<T> implements EntityQuery<T> {
 
 	@Override
 	public T findOne(Specification<T> specification) {
-		try {
-			return specification.asQuery(entityManager).getSingleResult();
-		} catch (NoResultException e) {
-			return null;
-		}
+		return specification.asQuery(entityManager).getSingleResult();
 	}
 
 	@Override
